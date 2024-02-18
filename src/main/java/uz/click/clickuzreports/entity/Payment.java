@@ -7,7 +7,6 @@ import uz.click.clickuzreports.entity.enums.Status;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
 @Setter
 @Getter
 @NoArgsConstructor
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 public class Payment {
     private Long id;
-    private Service service;
+    private Long serviceId;
     private Long cardId;
     private BigDecimal amount;
     @Enumerated(EnumType.STRING)

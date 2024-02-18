@@ -25,9 +25,25 @@ public class History {
     private Long id;
     private Long receiverCardId;
     private Long senderCardId;
+    private String cardNumber;
     private BigDecimal amount;
-    private String serviceName;
+    private Long serviceId;
     private LocalDateTime transactionDateTime;
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public History(Payment payment) {
+        this.senderCardId = payment.getCardId();
+        this.amount = payment.getAmount();
+        this.transactionDateTime = payment.getPaymentTime();
+        this.serviceId = payment.getServiceId();
+        this.status = payment.getStatus();
+    }
+    public History(Transfer transfer){
+        this.senderCardId = transfer.getSenderCardId();
+        this.receiverCardId = transfer.getReceiverCardId();
+        this.amount = transfer.getAmount();
+        this.transactionDateTime = transfer.getTransferDate();
+        this.status = transfer.getStatus();
+    }
 }

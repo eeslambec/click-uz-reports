@@ -4,7 +4,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import uz.click.clickuzreports.entity.Payment;
 import uz.click.clickuzreports.entity.Transfer;
+
+import java.util.List;
 
 @FeignClient("click-uz-transfer")
 public interface TransferProxy {
@@ -17,4 +20,7 @@ public interface TransferProxy {
 
     @GetMapping("")
     ResponseEntity<Transfer> getBySenderCardNumber(@PathVariable String number);
+
+    @GetMapping("")
+    ResponseEntity<List<Payment>> getAll();
 }

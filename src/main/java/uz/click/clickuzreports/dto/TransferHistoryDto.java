@@ -11,9 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class TransferHistoryDto {
-    private Long receiverCardId;
-    private Long senderCardId;
+    private String cardNumber;
     private BigDecimal amount;
-    private LocalDateTime transactionDateTime = LocalDateTime.now();
-    private Status status = Status.FAILED;
+    private LocalDateTime transactionDateTime;
+    private Status status;
 }

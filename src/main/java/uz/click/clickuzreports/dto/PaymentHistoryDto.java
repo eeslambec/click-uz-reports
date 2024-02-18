@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class PaymentHistoryDto {
-    private String organizationName;
-    private String bankAccountNumber;
+    private Long serviceId;
     private BigDecimal amount;
-    private LocalDateTime transactionDateTime = LocalDateTime.now();
-    private Status status = Status.FAILED;
+    private LocalDateTime transactionDateTime;
+    private String senderCardNumber;
+    private Status status;
 }
