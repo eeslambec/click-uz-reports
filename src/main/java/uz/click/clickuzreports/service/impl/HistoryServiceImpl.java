@@ -1,18 +1,11 @@
 package uz.click.clickuzreports.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uz.click.clickuzreports.dto.PaymentHistoryDto;
-import uz.click.clickuzreports.dto.TransferHistoryDto;
 import uz.click.clickuzreports.entity.History;
-import uz.click.clickuzreports.entity.Payment;
-import uz.click.clickuzreports.entity.Transfer;
 import uz.click.clickuzreports.exception.InvalidArgumentException;
 import uz.click.clickuzreports.exception.NotFoundException;
 import uz.click.clickuzreports.exception.NullOrEmptyException;
-import uz.click.clickuzreports.proxy.PaymentProxy;
-import uz.click.clickuzreports.proxy.TransferProxy;
 import uz.click.clickuzreports.repository.HistoryRepository;
 import uz.click.clickuzreports.service.HistoryService;
 
@@ -24,46 +17,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HistoryServiceImpl implements HistoryService {
     private final HistoryRepository historyRepository;
-    private final PaymentProxy paymentProxy;
-    private final TransferProxy transferProxy;
-
     @Override
-    public History createPaymentHistory(PaymentHistoryDto paymentHistoryDto) {
-        if (paymentHistoryDto.getServiceId() == null)
-            throw new NullOrEmptyException("Service ID");
-        if (paymentHistoryDto.getAmount() == null)
+    public History create(History history) {
+        if (history.getId() != null)
+            throw new InvalidArgumentException("Id");
+        if (history.getServiceId() == null)
+            throw new NullOrEmptyException("Service Id");
+        if (history.getAmount() == null)
             throw new NullOrEmptyException("Amount");
-        if (paymentHistoryDto.getTransactionDateTime() == null)
-            throw new NullOrEmptyException("Transaction date time");
-        if (paymentHistoryDto.getSenderCardNumber() == null ||
-                paymentHistoryDto.getSenderCardNumber().isBlank() ||
-                paymentHistoryDto.getSenderCardNumber().isEmpty())
+        if (history.getTransactionDateTime() == null)
+            throw new NullOrEmptyException("Transaction time");
+        if (history.getSenderCardNumber() == null)
             throw new NullOrEmptyException("Sender card number");
-        ResponseEntity<Payment> bySenderCardNumber = paymentProxy.getBySenderCardNumber(paymentHistoryDto.getSenderCardNumber());
-        if (bySenderCardNumber.getBody() == null)
-            throw new NotFoundException("Payment by sender card number");
-        Payment payment = bySenderCardNumber.getBody();
-        return historyRepository.save(new History(payment));
+        if (history.getServiceId() == 1 && history.getReceiverCardNumber() == null)
+            throw new NullOrEmptyException("Receiver card number");
+        return historyRepository.save(history);
     }
-
-    @Override
-    public History createTransferHistory(TransferHistoryDto transferHistoryDto) {
-        if (transferHistoryDto.getAmount() == null)
-            throw new NullOrEmptyException("Amount");
-        if (transferHistoryDto.getStatus() == null)
-            throw new NullOrEmptyException("Status");
-        if (transferHistoryDto.getTransactionDateTime() == null)
-            throw new NullOrEmptyException("Transfer date time");
-        if (transferHistoryDto.getCardNumber() == null || transferHistoryDto.getCardNumber().isEmpty() || transferHistoryDto.getCardNumber().isBlank())
-            throw new NullOrEmptyException("Card number");
-
-        ResponseEntity<Transfer> bySenderCardNumber = transferProxy.getBySenderCardNumber(transferHistoryDto.getCardNumber());
-        if (bySenderCardNumber.getBody() == null)
-            throw new NotFoundException("Transfer by card number");
-        Transfer transfer = bySenderCardNumber.getBody();
-        return historyRepository.save(new History(transfer));
-    }
-
     @Override
     public History getById(Long id) {
         if (id == null)
@@ -98,13 +67,22 @@ public class HistoryServiceImpl implements HistoryService {
     public List<History> getByReceiverCardNumber(String number) {
         if (number == null || number.isBlank() || number.isEmpty())
             throw new NullOrEmptyException("Card number");
-        return historyRepository.findAllByCardNumber(number);
+        return historyRepository.findAllBySenderCardNumber(number);
     }
 
     @Override
     public List<History> getBySenderCardNumber(String number) {
         if (number == null || number.isEmpty() || number.isBlank())
             throw new NullOrEmptyException("CArd number");
-        return historyRepository.findAllByCardNumber(number);
+        return historyRepository.findAllByReceiverCardNumber(number);
+    }
+
+    @Override
+    public List<History> getByCardNumber(String number) {
+        if (number == null || number.isEmpty() || number.isBlank())
+            throw new NullOrEmptyException("Card number");
+        List<History> histories = historyRepository.findAllBySenderCardNumber(number);
+        histories.addAll(historyRepository.findAllByReceiverCardNumber(number));
+        return histories;
     }
 }

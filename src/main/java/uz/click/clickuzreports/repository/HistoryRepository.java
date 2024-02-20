@@ -10,5 +10,6 @@ import java.util.List;
 public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findAllByAmount(BigDecimal amount);
     List<History> findAllByTransactionDateTime(LocalDateTime history);
-    List<History> findAllByCardNumber(String cardNumber);
+    List<History> findAllBySenderCardNumber(String cardNumber);
+    List<History> findAllByReceiverCardNumber(String cardNumber);
 }
