@@ -7,4 +7,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  application:
+    name: click-uz-reports
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8741/eureka
 
