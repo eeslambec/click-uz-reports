@@ -21,4 +21,5 @@ public interface HistoryService {
     List<History> getAll();
     List<History> getByReceiverCardNumber(String number);
     List<History> getBySenderCardNumber(String number);
+    void download(String month, String year);
 }

@@ -107,4 +107,9 @@ public class HistoryServiceImpl implements HistoryService {
             throw new NullOrEmptyException("CArd number");
         return historyRepository.findAllByCardNumber(number);
     }
+
+    @Override
+    public void download(String month, String year) {
+        String[] 
+    }
 }
