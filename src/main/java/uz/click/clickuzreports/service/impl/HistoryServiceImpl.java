@@ -78,16 +78,15 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
+    public void download(String month, String year) {
+
+    }
+    @Override
     public List<History> getByCardNumber(String number) {
         if (number == null || number.isEmpty() || number.isBlank())
             throw new NullOrEmptyException("Card number");
         List<History> histories = historyRepository.findAllBySenderCardNumber(number);
         histories.addAll(historyRepository.findAllByReceiverCardNumber(number));
         return histories;
-    }
-
-    @Override
-    public void download(String month, String year) {
-        String[] 
     }
 }
