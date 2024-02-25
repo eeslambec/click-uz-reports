@@ -23,7 +23,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
-        if (token.startsWith("Bearer ")){
+        if (token != null && token.startsWith("Bearer ")){
             CustomResponseEntity<ClickUzAuthentication> verify = tokenProxy.verify(token.split(" ")[1]);
             if (verify.getBody() != null){
                 SecurityContextHolder.getContext().setAuthentication(

@@ -1,8 +1,11 @@
 package uz.click.clickuzreports.service;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import uz.click.clickuzreports.dto.DownloadDto;
 import uz.click.clickuzreports.entity.History;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,5 +20,5 @@ public interface HistoryService {
     List<History> getByReceiverCardNumber(String number);
     List<History> getBySenderCardNumber(String number);
     List<History> getByCardNumber(String number);
-    void download(String month, int year);
+    String download(DownloadDto downloadDto);
 }

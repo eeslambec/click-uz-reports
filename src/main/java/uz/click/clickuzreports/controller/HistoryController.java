@@ -1,17 +1,28 @@
 package uz.click.clickuzreports.controller;
 
+import feign.form.ContentType;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uz.click.clickuzreports.dto.DownloadDto;
 import uz.click.clickuzreports.dto.response.CustomResponseEntity;
 import uz.click.clickuzreports.entity.History;
 import uz.click.clickuzreports.service.HistoryService;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 
 @RestController
@@ -54,5 +65,17 @@ public class HistoryController {
     @GetMapping("/cardNumber/sender/{number}")
     public CustomResponseEntity<?> getBySenderCardNumber(@PathVariable String number){
         return CustomResponseEntity.ok(historyService.getBySenderCardNumber(number));
+    }
+    @GetMapping("/download")
+    @SneakyThrows
+    public ResponseEntity<?> download(@RequestBody DownloadDto downloadDto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.attachment().filename("history.xlsx").build());
+        InputStreamResource resource = new InputStreamResource(Files.newInputStream(Paths.get(historyService.download(downloadDto))));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
     }
 }

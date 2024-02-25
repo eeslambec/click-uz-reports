@@ -22,8 +22,8 @@ public class SecurityConfiguration {
     @SneakyThrows
     public SecurityFilterChain filterChain(HttpSecurity http){
         http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests(registry->
-                registry.anyRequest().authenticated());
+        http.authorizeHttpRequests(registry->registry.requestMatchers("/history/download/**").permitAll()
+                .anyRequest().authenticated());
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
